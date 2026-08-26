@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — EmployeeHub{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+{% block body_class %}app-layout{% endblock %}
+
+{% block body %}
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <i class="bi bi-grid-3x3-gap-fill"></i>
+        <span>EmployeeHub</span>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="{{ url_for('dashboard.index') }}" class="sidebar-link active">
+            <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+        </a>
+        <a href="{{ url_for('employees.index') }}" class="sidebar-link">
+            <i class="bi bi-people"></i><span>Employees</span>
+        </a>
+        <a href="{{ url_for('tasks.index') }}" class="sidebar-link">
+            <i class="bi bi-kanban"></i><span>Tasks</span>
+        </a>
+        <a href="{{ url_for('performance.index') }}" class="sidebar-link">
+            <i class="bi bi-graph-up-arrow"></i><span>Performance</span>
+        </a>
+        <a href="{{ url_for('attendance.index') }}" class="sidebar-link">
+            <i class="bi bi-calendar-check"></i><span>Attendance</span>
+        </a>
+        <a href="{{ url_for('performance.leaderboard') }}" class="sidebar-link">
+            <i class="bi bi-trophy"></i><span>Leaderboard</span>
+        </a>
+        <a href="{{ url_for('analytics.index') }}" class="sidebar-link">
+            <i class="bi bi-pie-chart"></i><span>Analytics</span>
+        </a>
+        <a href="{{ url_for('reports.index') }}" class="sidebar-link">
+            <i class="bi bi-file-earmark-pdf"></i><span>Reports</span>
+        </a>
+        <a href="{{ url_for('dashboard.settings') }}" class="sidebar-link">
+            <i class="bi bi-gear"></i><span>Settings</span>
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar">{{ current_user.email[0]|upper }}</div>
+            <div class="sidebar-user-info">
+                <span class="sidebar-user-name">{{ current_user.email.split('@')[0] }}</span>
+                <span class="sidebar-user-role">{{ current_user.role }}</span>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="mainContent">
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="breadcrumb-nav">
+                <span>Dashboard</span>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div class="topbar-search">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search employees, tasks..." id="globalSearch">
+            </div>
+            <button class="topbar-btn" title="Notifications">
+                <i class="bi bi-bell"></i>
+                <span class="notif-badge">3</span>
+            </button>
+            <button class="topbar-btn theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+                <i class="bi bi-moon-stars" id="themeIcon"></i>
+            </button>
+            <a href="{{ url_for('auth.logout') }}" class="topbar-btn" title="Logout">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- DASHBOARD CONTENT -->
+    <div class="content-area">
+        <div class="content-header">
+            <h1>Dashboard</h1>
+            <p>Welcome back! Here's your workforce overview.</p>
+        </div>
+
+        <!-- KPI CARDS -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:rgba(99,102,241,0.1)">
+                        <i class="bi bi-people-fill" style="color:#6366F1"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">{{ stats.total_employees }}</span>
+                        <span class="kpi-label">Active Employees</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:rgba(139,92,246,0.1)">
+                        <i class="bi bi-list-task" style="color:#8B5CF6"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">{{ stats.total_tasks }}</span>
+                        <span class="kpi-label">Total Tasks</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:rgba(16,185,129,0.1)">
+                        <i class="bi bi-check-circle-fill" style="color:#10B981"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">{{ stats.completion_rate }}%</span>
+                        <span class="kpi-label">Completion Rate</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:rgba(245,158,11,0.1)">
+                        <i class="bi bi-graph-up-arrow" style="color:#F59E0B"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">{{ stats.avg_performance }}%</span>
+                        <span class="kpi-label">Avg Performance</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:rgba(59,130,246,0.1)">
+                        <i class="bi bi-calendar-check-fill" style="color:#3B82F6"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">{{ stats.attendance_rate }}%</span>
+                        <span class="kpi-label">Attendance Rate</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:rgba(239,68,68,0.1)">
+                        <i class="bi bi-exclamation-triangle-fill" style="color:#EF4444"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">{{ stats.overdue_tasks }}</span>
+                        <span class="kpi-label">Overdue Tasks</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:rgba(16,185,129,0.1)">
+                        <i class="bi bi-check2-all" style="color:#10B981"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">{{ stats.completed_tasks }}</span>
+                        <span class="kpi-label">Completed Tasks</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background:rgba(99,102,241,0.1)">
+                        <i class="bi bi-hourglass-split" style="color:#6366F1"></i>
+                    </div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">{{ stats.in_progress_tasks }}</span>
+                        <span class="kpi-label">In Progress</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHARTS ROW -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-8">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5><i class="bi bi-graph-up"></i> Performance Trend</h5>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="perfTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5><i class="bi bi-pie-chart-fill"></i> Task Distribution</h5>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="taskDistChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5><i class="bi bi-building"></i> Department Performance</h5>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="deptPerfChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5><i class="bi bi-calendar-check"></i> Attendance Trend</h5>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="attTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INSIGHTS & TOP PERFORMERS -->
+        <div class="row g-3">
+            <div class="col-lg-7">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5><i class="bi bi-lightbulb"></i> Automated Performance Insights</h5>
+                    </div>
+                    <div class="insights-list">
+                        {% for insight in insights %}
+                        <div class="insight-item">
+                            <div class="insight-item-icon" style="color: {{ insight.color }}">
+                                <i class="bi {{ insight.icon }}"></i>
+                            </div>
+                            <div class="insight-item-content">
+                                <span class="insight-item-title">{{ insight.title }}</span>
+                                <p>{{ insight.message }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% if not insights %}
+                        <p class="text-muted p-3">No insights available yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h5><i class="bi bi-trophy"></i> Top Performers</h5>
+                        <a href="{{ url_for('performance.leaderboard') }}" class="view-all">View All</a>
+                    </div>
+                    <div class="top-performers-list">
+                        {% for perf in top_performers %}
+                        <div class="performer-item">
+                            <span class="performer-rank">{{ loop.index }}</span>
+                            <div class="performer-avatar" style="background: {{ perf.employee.avatar_color }}">
+                                {{ perf.employee.initials }}
+                            </div>
+                            <div class="performer-info">
+                                <span class="performer-name">{{ perf.employee.full_name }}</span>
+                                <span class="performer-dept">{{ perf.employee.department.name if perf.employee.department else 'N/A' }}</span>
+                            </div>
+                            <div class="performer-score">
+                                <span class="score-value">{{ perf.final_score }}%</span>
+                                <span class="score-badge badge-{{ perf.classification_badge }}">{{ perf.classification }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

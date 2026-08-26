@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Reports — EmployeeHub{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+{% block body_class %}app-layout{% endblock %}
+
+{% block body %}
+{% include "partials/sidebar.html" %}
+<main class="main-content" id="mainContent">
+    {% include "partials/topbar.html" %}
+    <div class="content-area">
+        <div class="content-header"><div><h1>Reports & Export</h1><p>Generate PDF reports and CSV exports</p></div></div>
+
+        <div class="row g-4">
+            <div class="col-12"><h4 class="mb-3"><i class="bi bi-file-earmark-pdf"></i> PDF Reports</h4></div>
+            <div class="col-md-6 col-lg-3">
+                <div class="report-card">
+                    <div class="report-icon" style="background:rgba(99,102,241,0.1)"><i class="bi bi-people-fill" style="color:#6366F1"></i></div>
+                    <h5>Employee Report</h5>
+                    <p>Performance summary of all employees</p>
+                    <a href="{{ url_for('reports.download_pdf', report_type='employee') }}" class="btn btn-primary-custom btn-sm"><i class="bi bi-download"></i> Download PDF</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="report-card">
+                    <div class="report-icon" style="background:rgba(139,92,246,0.1)"><i class="bi bi-building" style="color:#8B5CF6"></i></div>
+                    <h5>Department Report</h5>
+                    <p>Department overview and metrics</p>
+                    <a href="{{ url_for('reports.download_pdf', report_type='department') }}" class="btn btn-primary-custom btn-sm"><i class="bi bi-download"></i> Download PDF</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="report-card">
+                    <div class="report-icon" style="background:rgba(16,185,129,0.1)"><i class="bi bi-calendar-check" style="color:#10B981"></i></div>
+                    <h5>Attendance Report</h5>
+                    <p>Employee attendance summary</p>
+                    <a href="{{ url_for('reports.download_pdf', report_type='attendance') }}" class="btn btn-primary-custom btn-sm"><i class="bi bi-download"></i> Download PDF</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="report-card">
+                    <div class="report-icon" style="background:rgba(245,158,11,0.1)"><i class="bi bi-list-task" style="color:#F59E0B"></i></div>
+                    <h5>Task Report</h5>
+                    <p>Task status and progress report</p>
+                    <a href="{{ url_for('reports.download_pdf', report_type='task') }}" class="btn btn-primary-custom btn-sm"><i class="bi bi-download"></i> Download PDF</a>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <div class="row g-4">
+            <div class="col-12"><h4 class="mb-3"><i class="bi bi-filetype-csv"></i> CSV Export</h4></div>
+            <div class="col-md-6 col-lg-3">
+                <div class="report-card">
+                    <div class="report-icon" style="background:rgba(99,102,241,0.1)"><i class="bi bi-table" style="color:#6366F1"></i></div>
+                    <h5>Employee Data</h5>
+                    <p>Export all employee records</p>
+                    <a href="{{ url_for('reports.download_csv', data_type='employees') }}" class="btn btn-secondary-custom btn-sm"><i class="bi bi-download"></i> Export CSV</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="report-card">
+                    <div class="report-icon" style="background:rgba(139,92,246,0.1)"><i class="bi bi-table" style="color:#8B5CF6"></i></div>
+                    <h5>Task Data</h5>
+                    <p>Export all task records</p>
+                    <a href="{{ url_for('reports.download_csv', data_type='tasks') }}" class="btn btn-secondary-custom btn-sm"><i class="bi bi-download"></i> Export CSV</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="report-card">
+                    <div class="report-icon" style="background:rgba(16,185,129,0.1)"><i class="bi bi-table" style="color:#10B981"></i></div>
+                    <h5>Performance Data</h5>
+                    <p>Export performance records</p>
+                    <a href="{{ url_for('reports.download_csv', data_type='performance') }}" class="btn btn-secondary-custom btn-sm"><i class="bi bi-download"></i> Export CSV</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="report-card">
+                    <div class="report-icon" style="background:rgba(245,158,11,0.1)"><i class="bi bi-table" style="color:#F59E0B"></i></div>
+                    <h5>Attendance Data</h5>
+                    <p>Export attendance records</p>
+                    <a href="{{ url_for('reports.download_csv', data_type='attendance') }}" class="btn btn-secondary-custom btn-sm"><i class="bi bi-download"></i> Export CSV</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

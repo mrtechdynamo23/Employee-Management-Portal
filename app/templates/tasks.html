@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}Tasks — EmployeeHub{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+{% block body_class %}app-layout{% endblock %}
+
+{% block body %}
+{% include "partials/sidebar.html" %}
+<main class="main-content" id="mainContent">
+    {% include "partials/topbar.html" %}
+    <div class="content-area">
+        <div class="content-header">
+            <div>
+                <h1>{% if current_user.is_admin %}Task Management{% else %}My Assigned Tasks{% endif %}</h1>
+                <p>{% if current_user.is_admin %}Track and manage all organizational tasks{% else %}Manage your assigned tasks and update progress{% endif %}</p>
+            </div>
+            {% if current_user.is_admin %}
+            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                <i class="bi bi-plus-lg"></i> New Task
+            </button>
+            {% endif %}
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filter-bar">
+            <form method="GET" class="d-flex gap-2 flex-wrap align-items-center w-100">
+                <div class="search-box flex-grow-1">
+                    <i class="bi bi-search"></i>
+                    <input type="text" name="search" value="{{ search }}" placeholder="Search tasks..." class="form-control">
+                </div>
+                <select name="priority" class="form-select filter-select">
+                    <option value="">All Priorities</option>
+                    <option value="Low" {{ 'selected' if priority_filter == 'Low' }}>Low</option>
+                    <option value="Medium" {{ 'selected' if priority_filter == 'Medium' }}>Medium</option>
+                    <option value="High" {{ 'selected' if priority_filter == 'High' }}>High</option>
+                    <option value="Critical" {{ 'selected' if priority_filter == 'Critical' }}>Critical</option>
+                </select>
+                <select name="status" class="form-select filter-select">
+                    <option value="">All Status</option>
+                    <option value="To Do" {{ 'selected' if status_filter == 'To Do' }}>To Do</option>
+                    <option value="In Progress" {{ 'selected' if status_filter == 'In Progress' }}>In Progress</option>
+                    <option value="Under Review" {{ 'selected' if status_filter == 'Under Review' }}>Under Review</option>
+                    <option value="Completed" {{ 'selected' if status_filter == 'Completed' }}>Completed</option>
+                    <option value="Overdue" {{ 'selected' if status_filter == 'Overdue' }}>Overdue</option>
+                </select>
+                <input type="hidden" name="view" value="{{ view }}">
+                <button type="submit" class="btn btn-primary-custom btn-sm"><i class="bi bi-filter"></i> Filter</button>
+                <a href="{{ url_for('tasks.index') }}" class="btn btn-secondary-custom btn-sm"><i class="bi bi-x-circle"></i> Clear</a>
+            </form>
+        </div>
+
+        <!-- VIEW TOGGLE -->
+        <div class="view-toggle mb-3">
+            <a href="?view=kanban" class="view-btn {{ 'active' if view == 'kanban' }}"><i class="bi bi-kanban"></i> Kanban</a>
+            <a href="?view=list" class="view-btn {{ 'active' if view == 'list' }}"><i class="bi bi-list-ul"></i> List</a>
+        </div>
+
+        {% if view == 'kanban' %}
+        <!-- KANBAN BOARD -->
+        <div class="kanban-board">
+            {% for status, status_tasks in kanban.items() %}
+            <div class="kanban-column">
+                <div class="kanban-column-header">
+                    <span class="kanban-status" style="color: {{ {'To Do':'#6B7280','In Progress':'#6366F1','Under Review':'#F59E0B','Completed':'#10B981','Overdue':'#EF4444'}[status] }}">
+                        {{ status }}
+                    </span>
+                    <span class="kanban-count">{{ status_tasks|length }}</span>
+                </div>
+                <div class="kanban-cards" data-status="{{ status }}">
+                    {% for task in status_tasks %}
+                    <div class="kanban-card" data-task-id="{{ task.id }}">
+                        <div class="kanban-card-header">
+                            <span class="priority-dot" style="background: {{ task.priority_color }}"></span>
+                            <span class="kanban-priority">{{ task.priority }}</span>
+                        </div>
+                        <h6 class="kanban-title">{{ task.title }}</h6>
+                        <div class="kanban-card-footer">
+                            <div class="kanban-assignee">
+                                {% if task.employee %}
+                                <span class="mini-avatar" style="background:{{ task.employee.avatar_color }}">{{ task.employee.initials }}</span>
+                                <span>{{ task.employee.first_name }}</span>
+                                {% else %}
+                                <span class="text-muted">Unassigned</span>
+                                {% endif %}
+                            </div>
+                            {% if task.due_date %}
+                            <span class="kanban-due {{ 'overdue' if task.is_overdue }}">
+                                <i class="bi bi-calendar"></i> {{ task.due_date.strftime('%b %d') }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="kanban-progress">
+                            <div class="progress-bar-mini"><div class="progress-fill" style="width:{{ task.progress }}%"></div></div>
+                            <span>{{ task.progress }}%</span>
+                        </div>
+                        <div class="kanban-actions">
+                            <button class="btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#editTask{{ task.id }}"><i class="bi bi-pencil"></i></button>
+                            <form method="POST" action="{{ url_for('tasks.delete', id=task.id) }}" class="d-inline" onsubmit="return confirm('Delete this task?')">
+                                <button class="btn-icon btn-sm"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- LIST VIEW -->
+        <div class="data-card">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead><tr><th>Task</th><th>Assigned To</th><th>Priority</th><th>Status</th><th>Due Date</th><th>Progress</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        {% for task in tasks %}
+                        <tr>
+                            <td><strong>{{ task.title }}</strong></td>
+                            <td>{{ task.employee.full_name if task.employee else 'Unassigned' }}</td>
+                            <td><span class="priority-badge" style="color:{{ task.priority_color }}"><i class="bi bi-circle-fill" style="font-size:0.5rem"></i> {{ task.priority }}</span></td>
+                            <td><span class="status-pill" style="background:{{ task.status_color }}">{{ task.status }}</span></td>
+                            <td class="{{ 'text-danger' if task.is_overdue }}">{{ task.due_date.strftime('%b %d, %Y') if task.due_date else '—' }}</td>
+                            <td><div class="d-flex align-items-center gap-2"><div class="progress-bar-mini" style="width:60px"><div class="progress-fill" style="width:{{ task.progress }}%"></div></div><span class="small">{{ task.progress }}%</span></div></td>
+                            <td>
+                                <button class="btn-icon btn-sm" data-bs-toggle="modal" data-bs-target="#editTask{{ task.id }}"><i class="bi bi-pencil"></i></button>
+                                <form method="POST" action="{{ url_for('tasks.delete', id=task.id) }}" class="d-inline" onsubmit="return confirm('Delete this task?')">
+                                    <button class="btn-icon btn-sm"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</main>
+
+<!-- ADD TASK MODAL -->
+<div class="modal fade" id="addTaskModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header"><h5><i class="bi bi-plus-lg"></i> New Task</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="{{ url_for('tasks.add') }}">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12"><label class="form-label">Title *</label><input type="text" name="title" class="form-control" required></div>
+                        <div class="col-12"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="3"></textarea></div>
+                        <div class="col-6"><label class="form-label">Assign To</label>
+                            <select name="employee_id" class="form-select">
+                                <option value="">Select Employee</option>
+                                {% for emp in employees %}<option value="{{ emp.id }}">{{ emp.full_name }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6"><label class="form-label">Priority</label>
+                            <select name="priority" class="form-select">
+                                <option value="Low">Low</option><option value="Medium" selected>Medium</option><option value="High">High</option><option value="Critical">Critical</option>
+                            </select>
+                        </div>
+                        <div class="col-6"><label class="form-label">Due Date</label><input type="date" name="due_date" class="form-control"></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary-custom"><i class="bi bi-check-lg"></i> Create Task</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT TASK MODALS -->
+{% for task in tasks %}
+<div class="modal fade" id="editTask{{ task.id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header"><h5>Edit Task</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="{{ url_for('tasks.update', id=task.id) }}">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12"><label class="form-label">Title</label><input type="text" name="title" class="form-control" value="{{ task.title }}"></div>
+                        <div class="col-12"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="2">{{ task.description or '' }}</textarea></div>
+                        <div class="col-6"><label class="form-label">Assign To</label>
+                            <select name="employee_id" class="form-select">
+                                {% for emp in employees %}<option value="{{ emp.id }}" {{ 'selected' if task.employee_id == emp.id }}>{{ emp.full_name }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6"><label class="form-label">Priority</label>
+                            <select name="priority" class="form-select">
+                                {% for p in ['Low','Medium','High','Critical'] %}<option value="{{ p }}" {{ 'selected' if task.priority == p }}>{{ p }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-4"><label class="form-label">Status</label>
+                            <select name="status" class="form-select">
+                                {% for s in ['To Do','In Progress','Under Review','Completed','Overdue'] %}<option value="{{ s }}" {{ 'selected' if task.status == s }}>{{ s }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-4"><label class="form-label">Progress</label><input type="number" name="progress" class="form-control" value="{{ task.progress }}" min="0" max="100"></div>
+                        <div class="col-4"><label class="form-label">Due Date</label><input type="date" name="due_date" class="form-control" value="{{ task.due_date.isoformat() if task.due_date else '' }}"></div>
+                        <div class="col-6"><label class="form-label">Quality Score</label><input type="number" name="quality_score" class="form-control" value="{{ task.quality_score or '' }}" min="0" max="100" step="0.1"></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary-custom"><i class="bi bi-check-lg"></i> Update</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

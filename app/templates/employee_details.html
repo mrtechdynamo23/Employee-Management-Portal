@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block title %}{{ employee.full_name }} — EmployeeHub{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+{% block body_class %}app-layout{% endblock %}
+
+{% block body %}
+{% include "partials/sidebar.html" %}
+<main class="main-content" id="mainContent">
+    {% include "partials/topbar.html" %}
+    <div class="content-area">
+        <div class="content-header">
+            <div class="d-flex align-items-center gap-3">
+                <a href="{{ url_for('employees.index') }}" class="btn btn-secondary-custom btn-sm"><i class="bi bi-arrow-left"></i></a>
+                <div>
+                    <h1>{{ employee.full_name }}</h1>
+                    <p>{{ employee.employee_code }} • {{ employee.designation or 'N/A' }}</p>
+                </div>
+            </div>
+            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#editEmployeeModal">
+                <i class="bi bi-pencil"></i> Edit
+            </button>
+        </div>
+
+        <!-- PROFILE HEADER -->
+        <div class="profile-card mb-4">
+            <div class="profile-header">
+                <div class="profile-avatar" style="background: {{ employee.avatar_color }}">{{ employee.initials }}</div>
+                <div class="profile-info">
+                    <h3>{{ employee.full_name }}</h3>
+                    <p>{{ employee.designation or 'N/A' }} • {{ employee.department.name if employee.department else 'N/A' }}</p>
+                    <div class="profile-meta">
+                        <span><i class="bi bi-envelope"></i> {{ employee.email }}</span>
+                        <span><i class="bi bi-phone"></i> {{ employee.phone or 'N/A' }}</span>
+                        <span><i class="bi bi-calendar"></i> Joined {{ employee.date_of_joining.strftime('%b %d, %Y') if employee.date_of_joining else 'N/A' }}</span>
+                    </div>
+                </div>
+                <span class="status-badge {{ 'active' if employee.status == 'Active' else 'inactive' }}">{{ employee.status }}</span>
+            </div>
+        </div>
+
+        <!-- METRIC CARDS -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="kpi-card"><div class="kpi-icon" style="background:rgba(99,102,241,0.1)"><i class="bi bi-list-task" style="color:#6366F1"></i></div><div class="kpi-info"><span class="kpi-value">{{ total_tasks }}</span><span class="kpi-label">Total Tasks</span></div></div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="kpi-card"><div class="kpi-icon" style="background:rgba(16,185,129,0.1)"><i class="bi bi-check-circle-fill" style="color:#10B981"></i></div><div class="kpi-info"><span class="kpi-value">{{ completed_tasks }}</span><span class="kpi-label">Completed</span></div></div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="kpi-card"><div class="kpi-icon" style="background:rgba(245,158,11,0.1)"><i class="bi bi-graph-up-arrow" style="color:#F59E0B"></i></div><div class="kpi-info"><span class="kpi-value">{{ employee.latest_performance_score }}%</span><span class="kpi-label">Performance</span></div></div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="kpi-card"><div class="kpi-icon" style="background:rgba(59,130,246,0.1)"><i class="bi bi-calendar-check-fill" style="color:#3B82F6"></i></div><div class="kpi-info"><span class="kpi-value">{{ attendance_rate }}%</span><span class="kpi-label">Attendance</span></div></div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <ul class="nav nav-tabs custom-tabs mb-3">
+            <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tasksTab">Tasks</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#perfTab">Performance</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#attTab">Attendance</a></li>
+            <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#feedbackTab">Feedback</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <!-- TASKS TAB -->
+            <div class="tab-pane fade show active" id="tasksTab">
+                <div class="data-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Task</th><th>Priority</th><th>Status</th><th>Due Date</th><th>Progress</th></tr></thead>
+                            <tbody>
+                                {% for task in tasks %}
+                                <tr>
+                                    <td>{{ task.title }}</td>
+                                    <td><span class="priority-badge" style="color:{{ task.priority_color }}">{{ task.priority }}</span></td>
+                                    <td><span class="status-pill" style="background:{{ task.status_color }}">{{ task.status }}</span></td>
+                                    <td>{{ task.due_date.strftime('%b %d, %Y') if task.due_date else 'N/A' }}</td>
+                                    <td><div class="progress-bar-mini"><div class="progress-fill" style="width:{{ task.progress }}%"></div></div><span class="progress-text">{{ task.progress }}%</span></td>
+                                </tr>
+                                {% endfor %}
+                                {% if not tasks %}<tr><td colspan="5" class="text-center py-3 text-muted">No tasks assigned.</td></tr>{% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERFORMANCE TAB -->
+            <div class="tab-pane fade" id="perfTab">
+                <div class="data-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Period</th><th>Task Completion</th><th>Quality</th><th>Attendance</th><th>Productivity</th><th>Manager</th><th>Final</th><th>Classification</th></tr></thead>
+                            <tbody>
+                                {% for perf in performances %}
+                                <tr>
+                                    <td>{{ perf.period }}</td>
+                                    <td>{{ perf.task_completion }}%</td>
+                                    <td>{{ perf.quality_score }}%</td>
+                                    <td>{{ perf.attendance_score }}%</td>
+                                    <td>{{ perf.productivity_score }}%</td>
+                                    <td>{{ perf.manager_rating }}%</td>
+                                    <td><strong>{{ perf.final_score }}%</strong></td>
+                                    <td><span class="score-badge badge-{{ perf.classification_badge }}">{{ perf.classification }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ATTENDANCE TAB -->
+            <div class="tab-pane fade" id="attTab">
+                <div class="data-card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead><tr><th>Date</th><th>Status</th><th>Check In</th><th>Check Out</th></tr></thead>
+                            <tbody>
+                                {% for att in attendances %}
+                                <tr>
+                                    <td>{{ att.date.strftime('%b %d, %Y') }}</td>
+                                    <td><span class="status-pill" style="background:{{ att.status_color }}">{{ att.status }}</span></td>
+                                    <td>{{ att.check_in or '—' }}</td>
+                                    <td>{{ att.check_out or '—' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FEEDBACK TAB -->
+            <div class="tab-pane fade" id="feedbackTab">
+                <div class="data-card p-3">
+                    {% for fb in feedback_list %}
+                    <div class="feedback-item">
+                        <div class="feedback-header">
+                            <span class="feedback-type" style="color:{{ fb.type_color }}"><i class="bi {{ fb.type_icon }}"></i> {{ fb.type }}</span>
+                            <span class="feedback-date">{{ fb.created_at.strftime('%b %d, %Y') }}</span>
+                        </div>
+                        <p>{{ fb.content }}</p>
+                        <span class="feedback-by">— {{ fb.giver.full_name if fb.giver else 'System' }}</span>
+                    </div>
+                    {% endfor %}
+                    {% if not feedback_list %}<p class="text-muted">No feedback received yet.</p>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- EDIT MODAL -->
+<div class="modal fade" id="editEmployeeModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-custom">
+            <div class="modal-header"><h5><i class="bi bi-pencil"></i> Edit Employee</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="{{ url_for('employees.edit', id=employee.id) }}">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-6"><label class="form-label">First Name *</label><input type="text" name="first_name" class="form-control" value="{{ employee.first_name }}" required></div>
+                        <div class="col-6"><label class="form-label">Last Name *</label><input type="text" name="last_name" class="form-control" value="{{ employee.last_name }}" required></div>
+                        <div class="col-12"><label class="form-label">Email *</label><input type="email" name="email" class="form-control" value="{{ employee.email }}" required></div>
+                        <div class="col-6"><label class="form-label">Phone</label><input type="text" name="phone" class="form-control" value="{{ employee.phone or '' }}"></div>
+                        <div class="col-6"><label class="form-label">Department</label>
+                            <select name="department_id" class="form-select">
+                                <option value="">Select</option>
+                                {% for dept in departments %}
+                                <option value="{{ dept.id }}" {{ 'selected' if employee.department_id == dept.id }}>{{ dept.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6"><label class="form-label">Designation</label><input type="text" name="designation" class="form-control" value="{{ employee.designation or '' }}"></div>
+                        <div class="col-6"><label class="form-label">Date of Joining</label><input type="date" name="date_of_joining" class="form-control" value="{{ employee.date_of_joining.isoformat() if employee.date_of_joining else '' }}"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary-custom"><i class="bi bi-check-lg"></i> Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% set departments = [] %}
+{% from "base.html" import nothing with context %}
+<script>
+// Fetch departments for edit modal
+fetch('/employees/search?q=').catch(e => {});
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

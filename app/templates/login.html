@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Login — EmployeeHub{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+{% endblock %}
+{% block body_class %}login-page{% endblock %}
+
+{% block body %}
+<div class="login-container">
+    <div class="login-left">
+        <div class="login-left-content">
+            <a href="{{ url_for('auth.landing') }}" class="login-brand">
+                <i class="bi bi-grid-3x3-gap-fill"></i> EmployeeHub
+            </a>
+            <h2>Smart Workforce Management</h2>
+            <p>Manage employees, track tasks, measure performance, and analyze workforce data — all in one platform.</p>
+            <img src="{{ url_for('static', filename='images/hero-team.jpg') }}" alt="Team" class="login-visual">
+            <div class="login-features">
+                <div class="login-feature"><i class="bi bi-check-circle-fill"></i> Employee Management</div>
+                <div class="login-feature"><i class="bi bi-check-circle-fill"></i> Task Tracking</div>
+                <div class="login-feature"><i class="bi bi-check-circle-fill"></i> Performance Analytics</div>
+                <div class="login-feature"><i class="bi bi-check-circle-fill"></i> Attendance Monitoring</div>
+            </div>
+        </div>
+    </div>
+    <div class="login-right">
+        <div class="login-form-container">
+            <h2>Welcome Back 👋</h2>
+            <p class="login-subtitle">Sign in to access your workforce dashboard</p>
+
+            <form method="POST" action="{{ url_for('auth.login') }}" class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email"><i class="bi bi-envelope"></i> Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" 
+                           placeholder="Enter your email" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password"><i class="bi bi-lock"></i> Password</label>
+                    <div class="password-input">
+                        <input type="password" id="password" name="password" class="form-control"
+                               placeholder="Enter your password" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="bi bi-eye" id="passwordIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" value="1">
+                        <span>Remember Me</span>
+                    </label>
+                    <a href="#" class="forgot-link">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn btn-login">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+            </form>
+
+            <div class="demo-credentials">
+                <h6><i class="bi bi-info-circle"></i> Demo Credentials</h6>
+                <div class="demo-cred-item" onclick="fillDemo('admin@employeehub.com', 'admin123')">
+                    <span class="demo-role-badge admin">Admin</span>
+                    <span>admin@employeehub.com / admin123</span>
+                </div>
+                <div class="demo-cred-item" onclick="fillDemo('arjun.kumar@employeehub.com', 'employee123')">
+                    <span class="demo-role-badge employee">Employee</span>
+                    <span>arjun.kumar@employeehub.com / employee123</span>
+                </div>
+            </div>
+
+            <a href="{{ url_for('auth.landing') }}" class="back-home">
+                <i class="bi bi-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword() {
+    const p = document.getElementById('password');
+    const i = document.getElementById('passwordIcon');
+    if (p.type === 'password') { p.type = 'text'; i.className = 'bi bi-eye-slash'; }
+    else { p.type = 'password'; i.className = 'bi bi-eye'; }
+}
+function fillDemo(email, pwd) {
+    document.getElementById('email').value = email;
+    document.getElementById('password').value = pwd;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Attendance — EmployeeHub{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+{% block body_class %}app-layout{% endblock %}
+
+{% block body %}
+{% include "partials/sidebar.html" %}
+<main class="main-content" id="mainContent">
+    {% include "partials/topbar.html" %}
+    <div class="content-area">
+        <div class="content-header">
+            <div><h1>Attendance</h1><p>Track employee attendance</p></div>
+        </div>
+
+        <!-- ATTENDANCE STATS -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="kpi-card"><div class="kpi-icon" style="background:rgba(16,185,129,0.1)"><i class="bi bi-check-circle-fill" style="color:#10B981"></i></div><div class="kpi-info"><span class="kpi-value">{{ present }}</span><span class="kpi-label">Present</span></div></div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="kpi-card"><div class="kpi-icon" style="background:rgba(239,68,68,0.1)"><i class="bi bi-x-circle-fill" style="color:#EF4444"></i></div><div class="kpi-info"><span class="kpi-value">{{ absent }}</span><span class="kpi-label">Absent</span></div></div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="kpi-card"><div class="kpi-icon" style="background:rgba(245,158,11,0.1)"><i class="bi bi-calendar-x-fill" style="color:#F59E0B"></i></div><div class="kpi-info"><span class="kpi-value">{{ leave }}</span><span class="kpi-label">On Leave</span></div></div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="kpi-card"><div class="kpi-icon" style="background:rgba(249,115,22,0.1)"><i class="bi bi-clock-fill" style="color:#F97316"></i></div><div class="kpi-info"><span class="kpi-value">{{ late }}</span><span class="kpi-label">Late</span></div></div>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <form method="GET" class="d-flex gap-2 flex-wrap align-items-center w-100">
+                <input type="date" name="date" value="{{ selected_date }}" class="form-control" style="max-width:200px">
+                <select name="department" class="form-select filter-select"><option value="">All Departments</option>{% for dept in departments %}<option value="{{ dept.id }}" {{ 'selected' if dept_filter|string == dept.id|string }}>{{ dept.name }}</option>{% endfor %}</select>
+                <button type="submit" class="btn btn-primary-custom btn-sm"><i class="bi bi-filter"></i> Filter</button>
+            </form>
+        </div>
+
+        <div class="data-card">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead><tr><th>Employee</th><th>Department</th><th>Status</th><th>Check In</th><th>Check Out</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        {% for att in records %}
+                        <tr>
+                            <td>
+                                <div class="emp-cell">
+                                    <div class="emp-avatar" style="background:{{ att.employee.avatar_color }}">{{ att.employee.initials }}</div>
+                                    <span class="emp-name">{{ att.employee.full_name }}</span>
+                                </div>
+                            </td>
+                            <td>{{ att.employee.department.name if att.employee.department else 'N/A' }}</td>
+                            <td><span class="status-pill" style="background:{{ att.status_color }}">{{ att.status }}</span></td>
+                            <td>{{ att.check_in or '—' }}</td>
+                            <td>{{ att.check_out or '—' }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('attendance.mark') }}" class="d-inline">
+                                    <input type="hidden" name="employee_id" value="{{ att.employee_id }}">
+                                    <input type="hidden" name="date" value="{{ selected_date }}">
+                                    <select name="status" class="form-select form-select-sm d-inline-block" style="width:auto" onchange="this.form.submit()">
+                                        {% for s in ['Present','Absent','Leave','Late'] %}
+                                        <option value="{{ s }}" {{ 'selected' if att.status == s }}>{{ s }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% if not records %}<tr><td colspan="6" class="text-center py-3 text-muted">No attendance records for this date.</td></tr>{% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,221 @@
+/* ============================================
+   EMPLOYEEHUB — GLOBAL STYLES
+   ============================================ */
+
+/* CSS Custom Properties */
+:root {
+    --primary: #6366F1;
+    --primary-light: #818CF8;
+    --primary-dark: #4F46E5;
+    --secondary: #8B5CF6;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --info: #3B82F6;
+
+    --bg-primary: #F5F7FB;
+    --bg-card: #FFFFFF;
+    --bg-sidebar: #FFFFFF;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    --border: #E5E7EB;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-lg: 16px;
+    --transition: all 0.2s ease;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+    --bg-primary: #0F172A;
+    --bg-card: #1E293B;
+    --bg-sidebar: #1E293B;
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+    --border: #334155;
+    --shadow: 0 1px 3px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.25);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+/* Reset & Base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+h1 { font-size: 1.75rem; }
+h2 { font-size: 1.5rem; }
+p { color: var(--text-secondary); }
+a { text-decoration: none; color: var(--primary); transition: var(--transition); }
+a:hover { color: var(--primary-dark); }
+
+/* Buttons */
+.btn-primary-custom {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+.btn-primary-custom:hover { background: var(--primary-dark); color: #fff; transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+.btn-secondary-custom {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+.btn-secondary-custom:hover { background: var(--bg-primary); color: var(--text-primary); border-color: var(--primary); }
+
+.btn-icon {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 0.35rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+}
+.btn-icon:hover { background: rgba(99,102,241,0.1); color: var(--primary); }
+
+/* Flash Messages */
+.flash-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.flash-message {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    box-shadow: var(--shadow-lg);
+    border-left: 4px solid;
+    font-size: 0.875rem;
+    animation: slideIn 0.3s ease;
+    cursor: pointer;
+    min-width: 300px;
+}
+.flash-success { border-color: var(--success); }
+.flash-success i { color: var(--success); }
+.flash-danger { border-color: var(--danger); }
+.flash-danger i { color: var(--danger); }
+.flash-warning { border-color: var(--warning); }
+.flash-warning i { color: var(--warning); }
+.flash-info { border-color: var(--info); }
+.flash-info i { color: var(--info); }
+.flash-close { background: none; border: none; color: var(--text-muted); cursor: pointer; margin-left: auto; }
+
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* Auto-dismiss flash */
+.flash-message { animation: slideIn 0.3s ease, fadeOut 0.5s ease 4s forwards; }
+@keyframes fadeOut { to { opacity: 0; transform: translateX(100%); } }
+
+/* Form Styles */
+.form-control, .form-select {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+    outline: none;
+}
+.form-label { font-weight: 500; font-size: 0.8125rem; color: var(--text-primary); margin-bottom: 0.25rem; }
+
+/* Modal */
+.modal-custom {
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    background: var(--bg-card);
+}
+.modal-custom .modal-header {
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.5rem;
+}
+.modal-custom .modal-header h5 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+.modal-custom .modal-body { padding: 1.5rem; }
+.modal-custom .modal-footer { border-top: 1px solid var(--border); padding: 1rem 1.5rem; }
+
+/* Error Pages */
+.error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--bg-primary);
+}
+.error-content {
+    text-align: center;
+    padding: 3rem;
+}
+.error-icon {
+    font-size: 4rem;
+    color: var(--warning);
+    margin-bottom: 1rem;
+}
+.error-500 { color: var(--danger); }
+.error-content h1 {
+    font-size: 5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.error-content h2 { margin-bottom: 0.5rem; }
+.error-content p { margin-bottom: 2rem; color: var(--text-secondary); }
+.error-actions { display: flex; gap: 1rem; justify-content: center; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }

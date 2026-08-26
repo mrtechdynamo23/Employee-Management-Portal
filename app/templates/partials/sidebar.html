@@ -1,0 +1,72 @@
+<!-- SIDEBAR PARTIAL -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <i class="bi bi-grid-3x3-gap-fill"></i>
+        <span>EmployeeHub</span>
+    </div>
+    <nav class="sidebar-nav">
+        {% if current_user.is_admin %}
+            <!-- ADMIN MENU -->
+            <a href="{{ url_for('dashboard.index') }}" class="sidebar-link {{ 'active' if request.endpoint == 'dashboard.index' }}">
+                <i class="bi bi-speedometer2"></i><span>Overview</span>
+            </a>
+            <a href="{{ url_for('employees.index') }}" class="sidebar-link {{ 'active' if 'employees' in request.endpoint }}">
+                <i class="bi bi-people"></i><span>Employees</span>
+            </a>
+            <a href="{{ url_for('tasks.index') }}" class="sidebar-link {{ 'active' if 'tasks' in request.endpoint }}">
+                <i class="bi bi-kanban"></i><span>All Tasks</span>
+            </a>
+            <a href="{{ url_for('performance.index') }}" class="sidebar-link {{ 'active' if request.endpoint == 'performance.index' }}">
+                <i class="bi bi-graph-up-arrow"></i><span>Performance</span>
+            </a>
+            <a href="{{ url_for('attendance.index') }}" class="sidebar-link {{ 'active' if 'attendance' in request.endpoint }}">
+                <i class="bi bi-calendar-check"></i><span>Attendance</span>
+            </a>
+            <a href="{{ url_for('performance.leaderboard') }}" class="sidebar-link {{ 'active' if request.endpoint == 'performance.leaderboard' }}">
+                <i class="bi bi-trophy"></i><span>Leaderboard</span>
+            </a>
+            <a href="{{ url_for('analytics.index') }}" class="sidebar-link {{ 'active' if 'analytics' in request.endpoint }}">
+                <i class="bi bi-pie-chart"></i><span>Analytics</span>
+            </a>
+            <a href="{{ url_for('reports.index') }}" class="sidebar-link {{ 'active' if 'reports' in request.endpoint }}">
+                <i class="bi bi-file-earmark-pdf"></i><span>Reports</span>
+            </a>
+            <a href="{{ url_for('dashboard.settings') }}" class="sidebar-link {{ 'active' if request.endpoint == 'dashboard.settings' }}">
+                <i class="bi bi-gear"></i><span>Settings</span>
+            </a>
+        {% else %}
+            <!-- EMPLOYEE MENU -->
+            <a href="{{ url_for('dashboard.index') }}" class="sidebar-link {{ 'active' if request.endpoint == 'dashboard.index' }}">
+                <i class="bi bi-person-workspace"></i><span>My Workspace</span>
+            </a>
+            <a href="{{ url_for('tasks.index') }}" class="sidebar-link {{ 'active' if 'tasks' in request.endpoint }}">
+                <i class="bi bi-check2-square"></i><span>My Tasks</span>
+            </a>
+            <a href="{{ url_for('attendance.index') }}" class="sidebar-link {{ 'active' if 'attendance' in request.endpoint }}">
+                <i class="bi bi-calendar-check"></i><span>My Attendance</span>
+            </a>
+            <a href="{{ url_for('performance.index') }}" class="sidebar-link {{ 'active' if request.endpoint == 'performance.index' }}">
+                <i class="bi bi-award"></i><span>My Performance</span>
+            </a>
+            <a href="{{ url_for('performance.leaderboard') }}" class="sidebar-link {{ 'active' if request.endpoint == 'performance.leaderboard' }}">
+                <i class="bi bi-trophy"></i><span>Leaderboard</span>
+            </a>
+            <a href="{{ url_for('dashboard.settings') }}" class="sidebar-link {{ 'active' if request.endpoint == 'dashboard.settings' }}">
+                <i class="bi bi-person-gear"></i><span>My Profile</span>
+            </a>
+        {% endif %}
+    </nav>
+    <div class="sidebar-footer">
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar" style="background: {{ current_user.employee.avatar_color if current_user.employee else '#6366F1' }}">
+                {{ current_user.employee.initials if current_user.employee else current_user.email[0]|upper }}
+            </div>
+            <div class="sidebar-user-info">
+                <span class="sidebar-user-name">{{ current_user.employee.full_name if current_user.employee else current_user.email.split('@')[0] }}</span>
+                <span class="sidebar-user-role badge {% if current_user.is_admin %}bg-primary-subtle text-primary{% else %}bg-success-subtle text-success{% endif %}">
+                    {{ current_user.role }}
+                </span>
+            </div>
+        </div>
+    </div>
+</aside>

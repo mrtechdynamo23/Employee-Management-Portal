@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Leaderboard — EmployeeHub{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+{% block body_class %}app-layout{% endblock %}
+
+{% block body %}
+{% include "partials/sidebar.html" %}
+<main class="main-content" id="mainContent">
+    {% include "partials/topbar.html" %}
+    <div class="content-area">
+        <div class="content-header"><div><h1><i class="bi bi-trophy-fill" style="color:#F59E0B"></i> Leaderboard</h1><p>Recognize Exceptional Performance</p></div></div>
+
+        {% if top_performers|length >= 3 %}
+        <div class="leaderboard-podium mb-4">
+            <div class="podium-item silver">
+                <span class="podium-medal">🥈</span>
+                <div class="podium-avatar" style="background:{{ top_performers[1].employee.avatar_color }}">{{ top_performers[1].employee.initials }}</div>
+                <h5>{{ top_performers[1].employee.full_name }}</h5>
+                <span class="podium-dept">{{ top_performers[1].employee.department.name if top_performers[1].employee.department else '' }}</span>
+                <span class="podium-score">{{ top_performers[1].final_score }}%</span>
+                <span class="podium-badge badge-{{ top_performers[1].classification_badge }}">{{ top_performers[1].classification }}</span>
+            </div>
+            <div class="podium-item gold">
+                <span class="podium-medal">🥇</span>
+                <div class="podium-avatar" style="background:{{ top_performers[0].employee.avatar_color }}">{{ top_performers[0].employee.initials }}</div>
+                <h5>{{ top_performers[0].employee.full_name }}</h5>
+                <span class="podium-dept">{{ top_performers[0].employee.department.name if top_performers[0].employee.department else '' }}</span>
+                <span class="podium-score">{{ top_performers[0].final_score }}%</span>
+                <span class="podium-badge badge-{{ top_performers[0].classification_badge }}">{{ top_performers[0].classification }}</span>
+            </div>
+            <div class="podium-item bronze">
+                <span class="podium-medal">🥉</span>
+                <div class="podium-avatar" style="background:{{ top_performers[2].employee.avatar_color }}">{{ top_performers[2].employee.initials }}</div>
+                <h5>{{ top_performers[2].employee.full_name }}</h5>
+                <span class="podium-dept">{{ top_performers[2].employee.department.name if top_performers[2].employee.department else '' }}</span>
+                <span class="podium-score">{{ top_performers[2].final_score }}%</span>
+                <span class="podium-badge badge-{{ top_performers[2].classification_badge }}">{{ top_performers[2].classification }}</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="data-card">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead><tr><th>Rank</th><th>Employee</th><th>Department</th><th>Score</th><th>Classification</th><th>Badges</th></tr></thead>
+                    <tbody>
+                        {% for perf in top_performers %}
+                        {% set is_me = (not current_user.is_admin and current_user.employee and current_user.employee.id == perf.employee_id) %}
+                        <tr class="{{ 'table-highlight' if loop.index <= 3 }} {{ 'bg-primary-subtle border-primary border-2' if is_me }}">
+                            <td>
+                                <span class="rank-number rank-{{ loop.index }}">{{ loop.index }}</span>
+                            </td>
+                            <td>
+                                <div class="emp-cell">
+                                    <div class="emp-avatar" style="background:{{ perf.employee.avatar_color }}">{{ perf.employee.initials }}</div>
+                                    <div>
+                                        <span class="emp-name">
+                                            {{ perf.employee.full_name }}
+                                            {% if is_me %}
+                                            <span class="badge bg-primary ms-1">You</span>
+                                            {% endif %}
+                                        </span>
+                                        <span class="emp-code">{{ perf.employee.designation or '' }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ perf.employee.department.name if perf.employee.department else 'N/A' }}</td>
+                            <td><strong>{{ perf.final_score }}%</strong></td>
+                            <td><span class="score-badge badge-{{ perf.classification_badge }}">{{ perf.classification }}</span></td>
+                            <td>
+                                {% if loop.index == 1 %}<span class="leader-badge-sm">🏆 Top Performer</span>
+                                {% elif loop.index == 2 %}<span class="leader-badge-sm">⭐ Productivity Star</span>
+                                {% elif loop.index == 3 %}<span class="leader-badge-sm">🎯 Deadline Master</span>
+                                {% elif loop.index <= 5 %}<span class="leader-badge-sm">🤝 Team Player</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Analytics — EmployeeHub{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+{% block body_class %}app-layout{% endblock %}
+
+{% block body %}
+{% include "partials/sidebar.html" %}
+<main class="main-content" id="mainContent">
+    {% include "partials/topbar.html" %}
+    <div class="content-area">
+        <div class="content-header"><div><h1>Workforce Analytics</h1><p>Data-driven workforce insights</p></div></div>
+
+        <!-- DEPARTMENT STATS -->
+        <div class="row g-3 mb-4">
+            {% for ds in dept_stats %}
+            <div class="col-md-6 col-xl-4">
+                <div class="dept-stat-card">
+                    <h5><i class="bi bi-building"></i> {{ ds.department.name }}</h5>
+                    <div class="dept-metrics">
+                        <div class="dept-metric"><span class="dept-metric-value">{{ ds.employee_count }}</span><span class="dept-metric-label">Employees</span></div>
+                        <div class="dept-metric"><span class="dept-metric-value">{{ ds.avg_performance }}%</span><span class="dept-metric-label">Avg Performance</span></div>
+                        <div class="dept-metric"><span class="dept-metric-value">{{ ds.task_completion }}%</span><span class="dept-metric-label">Task Completion</span></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- CHARTS -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-6"><div class="chart-card"><div class="chart-header"><h5><i class="bi bi-graph-up"></i> Performance Trend</h5></div><div class="chart-wrapper"><canvas id="analyticsPerfChart"></canvas></div></div></div>
+            <div class="col-lg-6"><div class="chart-card"><div class="chart-header"><h5><i class="bi bi-pie-chart-fill"></i> Task Distribution</h5></div><div class="chart-wrapper"><canvas id="analyticsTaskChart"></canvas></div></div></div>
+        </div>
+        <div class="row g-3 mb-4">
+            <div class="col-lg-6"><div class="chart-card"><div class="chart-header"><h5><i class="bi bi-building"></i> Department Performance</h5></div><div class="chart-wrapper"><canvas id="analyticsDeptChart"></canvas></div></div></div>
+            <div class="col-lg-6"><div class="chart-card"><div class="chart-header"><h5><i class="bi bi-calendar-check"></i> Attendance Trend</h5></div><div class="chart-wrapper"><canvas id="analyticsAttChart"></canvas></div></div></div>
+        </div>
+        <div class="row g-3 mb-4">
+            <div class="col-lg-6"><div class="chart-card"><div class="chart-header"><h5><i class="bi bi-speedometer2"></i> Productivity Trend</h5></div><div class="chart-wrapper"><canvas id="analyticsProdChart"></canvas></div></div></div>
+            <div class="col-lg-6">
+                <div class="chart-card">
+                    <div class="chart-header"><h5><i class="bi bi-lightbulb"></i> Automated Performance Insights</h5></div>
+                    <div class="insights-list">
+                        {% for insight in insights %}
+                        <div class="insight-item">
+                            <div class="insight-item-icon" style="color:{{ insight.color }}"><i class="bi {{ insight.icon }}"></i></div>
+                            <div class="insight-item-content"><span class="insight-item-title">{{ insight.title }}</span><p>{{ insight.message }}</p></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+// Load analytics chart data
+fetch('/analytics/data').then(r=>r.json()).then(data => {
+    // Performance Trend
+    new Chart(document.getElementById('analyticsPerfChart'), {
+        type: 'line', data: { labels: data.performance_trend.labels, datasets: [{ label: 'Avg Performance', data: data.performance_trend.data, borderColor: '#6366F1', backgroundColor: 'rgba(99,102,241,0.1)', fill: true, tension: 0.4 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false, min: 60 } } }
+    });
+    // Task Distribution
+    new Chart(document.getElementById('analyticsTaskChart'), {
+        type: 'doughnut', data: { labels: data.task_distribution.labels, datasets: [{ data: data.task_distribution.data, backgroundColor: ['#6B7280','#6366F1','#F59E0B','#10B981','#EF4444'] }] },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+    // Department Performance
+    new Chart(document.getElementById('analyticsDeptChart'), {
+        type: 'bar', data: { labels: data.department_performance.labels, datasets: [{ label: 'Avg Score', data: data.department_performance.data, backgroundColor: ['#6366F1','#8B5CF6','#10B981','#F59E0B','#3B82F6'], borderRadius: 8 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false, min: 60 } } }
+    });
+    // Attendance Trend
+    new Chart(document.getElementById('analyticsAttChart'), {
+        type: 'line', data: { labels: data.attendance_trend.labels, datasets: [{ label: 'Attendance Rate', data: data.attendance_trend.data, borderColor: '#10B981', backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.4 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { min: 80, max: 100 } } }
+    });
+    // Productivity Trend
+    new Chart(document.getElementById('analyticsProdChart'), {
+        type: 'line', data: { labels: data.productivity_trend.labels, datasets: [{ label: 'Productivity', data: data.productivity_trend.data, borderColor: '#F59E0B', backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.4 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false, min: 60 } } }
+    });
+});
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

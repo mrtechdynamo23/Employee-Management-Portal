@@ -1,0 +1,753 @@
+{% extends "base.html" %}
+{% block title %}EmployeeHub — Smart Workforce Management Platform{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+{% endblock %}
+{% block body_class %}landing-page{% endblock %}
+
+{% block body %}
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg landing-nav" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="bi bi-grid-3x3-gap-fill brand-icon"></i>
+            <span>EmployeeHub</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navContent">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#how-it-works">How It Works</a></li>
+                <li class="nav-item"><a class="nav-link" href="#analytics">Analytics</a></li>
+                <li class="nav-item"><a class="nav-link" href="#performance">Performance</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-nav-login">Login</a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-nav-start">Get Started</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero-section" id="home">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <span class="hero-badge">
+                    <i class="bi bi-lightning-charge-fill"></i> SMART WORKFORCE MANAGEMENT
+                </span>
+                <h1 class="hero-title">
+                    Empower Your Workforce.<br>
+                    <span class="hero-highlight">Measure Performance.</span><br>
+                    Achieve More.
+                </h1>
+                <p class="hero-description">
+                    EmployeeHub brings employee management, task tracking, attendance, 
+                    performance evaluation and workforce analytics into one intelligent workspace.
+                </p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-hero-primary">
+                        <i class="bi bi-rocket-takeoff-fill"></i> Explore Platform
+                    </a>
+                    <a href="#how-it-works" class="btn btn-hero-secondary">
+                        <i class="bi bi-play-circle-fill"></i> See How It Works
+                    </a>
+                </div>
+                <div class="hero-trust">
+                    <div class="trust-avatars">
+                        <div class="trust-avatar" style="background: #6366F1">A</div>
+                        <div class="trust-avatar" style="background: #8B5CF6">P</div>
+                        <div class="trust-avatar" style="background: #EC4899">R</div>
+                        <div class="trust-avatar" style="background: #10B981">S</div>
+                    </div>
+                    <span class="trust-text">Trusted by 500+ workforce professionals</span>
+                </div>
+            </div>
+            <div class="col-lg-6 hero-visual">
+                <div class="hero-visual-container">
+                    <img src="{{ url_for('static', filename='images/hero-team.jpg') }}" alt="Team Collaboration" class="hero-team-img">
+                    <div class="hero-dashboard-overlay">
+                        <img src="{{ url_for('static', filename='images/hero-dashboard.png') }}" alt="EmployeeHub Dashboard" class="hero-dashboard-img">
+                    </div>
+                    <div class="hero-float-card float-card-1">
+                        <i class="bi bi-graph-up-arrow" style="color: #10B981"></i>
+                        <div>
+                            <span class="float-value">94.2%</span>
+                            <span class="float-label">Performance</span>
+                        </div>
+                    </div>
+                    <div class="hero-float-card float-card-2">
+                        <i class="bi bi-check-circle-fill" style="color: #6366F1"></i>
+                        <div>
+                            <span class="float-value">98%</span>
+                            <span class="float-label">Task Completion</span>
+                        </div>
+                    </div>
+                    <div class="hero-float-card float-card-3">
+                        <i class="bi bi-people-fill" style="color: #8B5CF6"></i>
+                        <div>
+                            <span class="float-value">128</span>
+                            <span class="float-label">Employees</span>
+                        </div>
+                    </div>
+                    <div class="hero-float-card float-card-4">
+                        <i class="bi bi-list-task" style="color: #F59E0B"></i>
+                        <div>
+                            <span class="float-value">12</span>
+                            <span class="float-label">Tasks Due</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+</section>
+
+<!-- METRIC STRIP -->
+<section class="metric-strip">
+    <div class="container">
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <div class="metric-item">
+                    <span class="metric-number" data-target="500">0</span><span class="metric-plus">+</span>
+                    <span class="metric-label">Employees Managed</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="metric-item">
+                    <span class="metric-number" data-target="2450">0</span><span class="metric-plus">+</span>
+                    <span class="metric-label">Tasks Tracked</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="metric-item">
+                    <span class="metric-number" data-target="94">0</span><span class="metric-plus">%</span>
+                    <span class="metric-label">Average Performance</span>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="metric-item">
+                    <span class="metric-number" data-target="98">0</span><span class="metric-plus">%</span>
+                    <span class="metric-label">Task Completion</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROBLEM / SOLUTION -->
+<section class="problem-section" id="about">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">The Challenge</span>
+            <h2 class="section-title">Workforce Management Shouldn't Be Complicated.</h2>
+            <p class="section-subtitle">Many organizations still rely on outdated methods that create inefficiency and blind spots.</p>
+        </div>
+        <div class="row g-4 mb-5">
+            <div class="col-md-4 col-6">
+                <div class="problem-card">
+                    <i class="bi bi-file-earmark-spreadsheet"></i>
+                    <span>Spreadsheet-Based Records</span>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="problem-card">
+                    <i class="bi bi-diagram-3"></i>
+                    <span>Scattered Task Tracking</span>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="problem-card">
+                    <i class="bi bi-clipboard-x"></i>
+                    <span>Manual Performance Reviews</span>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="problem-card">
+                    <i class="bi bi-eye-slash"></i>
+                    <span>Poor Visibility</span>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="problem-card">
+                    <i class="bi bi-printer"></i>
+                    <span>Difficult Reporting</span>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="problem-card">
+                    <i class="bi bi-bar-chart"></i>
+                    <span>Lack of Analytics</span>
+                </div>
+            </div>
+        </div>
+        <div class="solution-flow">
+            <div class="solution-step">
+                <div class="solution-icon"><i class="bi bi-collection"></i></div>
+                <span>Fragmented Data</span>
+            </div>
+            <div class="solution-arrow"><i class="bi bi-arrow-right"></i></div>
+            <div class="solution-step active">
+                <div class="solution-icon"><i class="bi bi-grid-3x3-gap-fill"></i></div>
+                <span>Centralized Platform</span>
+            </div>
+            <div class="solution-arrow"><i class="bi bi-arrow-right"></i></div>
+            <div class="solution-step">
+                <div class="solution-icon"><i class="bi bi-lightbulb"></i></div>
+                <span>Actionable Insights</span>
+            </div>
+        </div>
+        <p class="solution-tagline">EmployeeHub brings everything together.</p>
+    </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="features-section" id="features">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Capabilities</span>
+            <h2 class="section-title">Everything Your Team Needs. In One Place.</h2>
+            <p class="section-subtitle">Six powerful modules designed to streamline your entire workforce management workflow.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card" data-aos="fade-up">
+                    <div class="feature-icon" style="background: rgba(99,102,241,0.1)">
+                        <i class="bi bi-people-fill" style="color: #6366F1"></i>
+                    </div>
+                    <h3>Employee Management</h3>
+                    <p>Centralize employee information, departments, designations and status in one organized platform.</p>
+                    <div class="feature-indicator"></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon" style="background: rgba(139,92,246,0.1)">
+                        <i class="bi bi-kanban-fill" style="color: #8B5CF6"></i>
+                    </div>
+                    <h3>Task Management</h3>
+                    <p>Assign tasks, prioritize work, track progress and identify overdue tasks with Kanban boards.</p>
+                    <div class="feature-indicator"></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon" style="background: rgba(16,185,129,0.1)">
+                        <i class="bi bi-graph-up-arrow" style="color: #10B981"></i>
+                    </div>
+                    <h3>Performance Tracking</h3>
+                    <p>Measure employee performance using transparent and weighted metrics with real-time scoring.</p>
+                    <div class="feature-indicator"></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon" style="background: rgba(245,158,11,0.1)">
+                        <i class="bi bi-calendar-check-fill" style="color: #F59E0B"></i>
+                    </div>
+                    <h3>Attendance Monitoring</h3>
+                    <p>Track attendance, leave, absence and working consistency with detailed daily and monthly reports.</p>
+                    <div class="feature-indicator"></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon" style="background: rgba(59,130,246,0.1)">
+                        <i class="bi bi-pie-chart-fill" style="color: #3B82F6"></i>
+                    </div>
+                    <h3>Workforce Analytics</h3>
+                    <p>Visualize productivity, performance, attendance and department trends with interactive charts.</p>
+                    <div class="feature-indicator"></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon" style="background: rgba(239,68,68,0.1)">
+                        <i class="bi bi-file-earmark-pdf-fill" style="color: #EF4444"></i>
+                    </div>
+                    <h3>Reports & Export</h3>
+                    <p>Generate employee, department, task and attendance reports in PDF and CSV formats.</p>
+                    <div class="feature-indicator"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRODUCT SHOWCASE -->
+<section class="showcase-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Product Preview</span>
+            <h2 class="section-title">Complete Workforce Visibility. At a Glance.</h2>
+            <p class="section-subtitle">A powerful dashboard that brings together all your workforce metrics in one unified view.</p>
+        </div>
+        <div class="showcase-dashboard">
+            <div class="showcase-topbar">
+                <div class="showcase-dots">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                </div>
+                <span class="showcase-url">employeehub.app/dashboard</span>
+            </div>
+            <div class="showcase-content">
+                <div class="row g-3 p-3">
+                    <div class="col-6 col-md-3">
+                        <div class="showcase-kpi">
+                            <i class="bi bi-people-fill" style="color:#6366F1"></i>
+                            <div class="showcase-kpi-value">32</div>
+                            <div class="showcase-kpi-label">Employees</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="showcase-kpi">
+                            <i class="bi bi-list-task" style="color:#8B5CF6"></i>
+                            <div class="showcase-kpi-value">128</div>
+                            <div class="showcase-kpi-label">Tasks</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="showcase-kpi">
+                            <i class="bi bi-check-circle-fill" style="color:#10B981"></i>
+                            <div class="showcase-kpi-value">94%</div>
+                            <div class="showcase-kpi-label">Completion</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="showcase-kpi">
+                            <i class="bi bi-graph-up-arrow" style="color:#F59E0B"></i>
+                            <div class="showcase-kpi-value">87.5%</div>
+                            <div class="showcase-kpi-label">Performance</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3 px-3 pb-3">
+                    <div class="col-md-8">
+                        <div class="showcase-chart-area">
+                            <h6 class="showcase-chart-title">Performance Trend</h6>
+                            <canvas id="showcaseChart" height="150"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="showcase-chart-area">
+                            <h6 class="showcase-chart-title">Task Distribution</h6>
+                            <canvas id="showcasePie" height="150"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works-section" id="how-it-works">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Workflow</span>
+            <h2 class="section-title">How EmployeeHub Works</h2>
+            <p class="section-subtitle">Six simple steps to transform your workforce management.</p>
+        </div>
+        <div class="steps-container">
+            <div class="steps-line"></div>
+            <div class="row g-4">
+                <div class="col-md-4 col-6">
+                    <div class="step-card scroll-reveal">
+                        <div class="step-number">01</div>
+                        <div class="step-icon"><i class="bi bi-person-plus-fill"></i></div>
+                        <h4>Add Employees</h4>
+                        <p>Register employee profiles with department and designation details.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="step-card scroll-reveal">
+                        <div class="step-number">02</div>
+                        <div class="step-icon"><i class="bi bi-clipboard-plus-fill"></i></div>
+                        <h4>Assign Tasks</h4>
+                        <p>Create tasks with priorities, deadlines and assign to team members.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="step-card scroll-reveal">
+                        <div class="step-number">03</div>
+                        <div class="step-icon"><i class="bi bi-speedometer2"></i></div>
+                        <h4>Track Progress</h4>
+                        <p>Monitor task completion with Kanban boards and progress tracking.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="step-card scroll-reveal">
+                        <div class="step-number">04</div>
+                        <div class="step-icon"><i class="bi bi-calendar-check-fill"></i></div>
+                        <h4>Monitor Attendance</h4>
+                        <p>Track daily attendance, leave and working consistency.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="step-card scroll-reveal">
+                        <div class="step-number">05</div>
+                        <div class="step-icon"><i class="bi bi-trophy-fill"></i></div>
+                        <h4>Measure Performance</h4>
+                        <p>Evaluate employees using weighted, transparent metrics.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6">
+                    <div class="step-card scroll-reveal">
+                        <div class="step-number">06</div>
+                        <div class="step-icon"><i class="bi bi-lightbulb-fill"></i></div>
+                        <h4>Analyze & Improve</h4>
+                        <p>Derive insights from data to make informed workforce decisions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PERFORMANCE METHODOLOGY -->
+<section class="methodology-section" id="performance">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Methodology</span>
+            <h2 class="section-title">Performance That Is Measured — Not Guessed.</h2>
+            <p class="section-subtitle">EmployeeHub calculates a performance score using measurable, weighted factors.</p>
+        </div>
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="methodology-weights">
+                    <div class="weight-item scroll-reveal">
+                        <div class="weight-bar">
+                            <div class="weight-fill" style="width:30%; background: #6366F1"></div>
+                        </div>
+                        <div class="weight-info">
+                            <span class="weight-name">Task Completion</span>
+                            <span class="weight-value">30%</span>
+                        </div>
+                    </div>
+                    <div class="weight-item scroll-reveal">
+                        <div class="weight-bar">
+                            <div class="weight-fill" style="width:25%; background: #8B5CF6"></div>
+                        </div>
+                        <div class="weight-info">
+                            <span class="weight-name">Task Quality</span>
+                            <span class="weight-value">25%</span>
+                        </div>
+                    </div>
+                    <div class="weight-item scroll-reveal">
+                        <div class="weight-bar">
+                            <div class="weight-fill" style="width:15%; background: #10B981"></div>
+                        </div>
+                        <div class="weight-info">
+                            <span class="weight-name">Attendance</span>
+                            <span class="weight-value">15%</span>
+                        </div>
+                    </div>
+                    <div class="weight-item scroll-reveal">
+                        <div class="weight-bar">
+                            <div class="weight-fill" style="width:20%; background: #F59E0B"></div>
+                        </div>
+                        <div class="weight-info">
+                            <span class="weight-name">Productivity</span>
+                            <span class="weight-value">20%</span>
+                        </div>
+                    </div>
+                    <div class="weight-item scroll-reveal">
+                        <div class="weight-bar">
+                            <div class="weight-fill" style="width:10%; background: #EF4444"></div>
+                        </div>
+                        <div class="weight-info">
+                            <span class="weight-name">Manager Rating</span>
+                            <span class="weight-value">10%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="formula-box scroll-reveal">
+                    <h6>Formula</h6>
+                    <code>Final Score = (TC × 0.30) + (TQ × 0.25) + (AT × 0.15) + (PR × 0.20) + (MR × 0.10)</code>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="methodology-demo scroll-reveal">
+                    <div class="demo-header">
+                        <div class="demo-avatar" style="background: #6366F1">AK</div>
+                        <div>
+                            <h5 class="demo-name">Arjun Kumar</h5>
+                            <span class="demo-role">Senior Developer • IT</span>
+                        </div>
+                    </div>
+                    <div class="demo-scores">
+                        <div class="demo-score-item">
+                            <span>Task Completion</span>
+                            <div class="demo-score-bar"><div class="demo-score-fill" style="width:92%"></div></div>
+                            <span class="demo-score-val">92%</span>
+                        </div>
+                        <div class="demo-score-item">
+                            <span>Quality</span>
+                            <div class="demo-score-bar"><div class="demo-score-fill" style="width:95%"></div></div>
+                            <span class="demo-score-val">95%</span>
+                        </div>
+                        <div class="demo-score-item">
+                            <span>Attendance</span>
+                            <div class="demo-score-bar"><div class="demo-score-fill" style="width:97%"></div></div>
+                            <span class="demo-score-val">97%</span>
+                        </div>
+                        <div class="demo-score-item">
+                            <span>Productivity</span>
+                            <div class="demo-score-bar"><div class="demo-score-fill" style="width:91%"></div></div>
+                            <span class="demo-score-val">91%</span>
+                        </div>
+                        <div class="demo-score-item">
+                            <span>Manager Rating</span>
+                            <div class="demo-score-bar"><div class="demo-score-fill" style="width:94%"></div></div>
+                            <span class="demo-score-val">94%</span>
+                        </div>
+                    </div>
+                    <div class="demo-result">
+                        <div class="demo-final">
+                            <span>Overall Score</span>
+                            <span class="demo-final-score" id="demoScore">0</span>
+                        </div>
+                        <span class="demo-badge">EXCELLENT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ANALYTICS PREVIEW -->
+<section class="analytics-section" id="analytics">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Analytics</span>
+            <h2 class="section-title">Turn Workforce Data Into Decisions.</h2>
+            <p class="section-subtitle">Interactive charts and automated insights help you understand your workforce better.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="analytics-card scroll-reveal">
+                    <h5><i class="bi bi-graph-up"></i> Performance Trend</h5>
+                    <canvas id="analyticsPerfTrend" height="180"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="analytics-card scroll-reveal">
+                    <h5><i class="bi bi-pie-chart-fill"></i> Task Distribution</h5>
+                    <canvas id="analyticsTaskDist" height="180"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="analytics-card scroll-reveal">
+                    <h5><i class="bi bi-building"></i> Department Performance</h5>
+                    <canvas id="analyticsDeptPerf" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PERFORMANCE INSIGHTS -->
+<section class="insights-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Intelligence</span>
+            <h2 class="section-title">From Numbers to Insights.</h2>
+            <p class="section-subtitle">Automated Performance Insights generated from your workforce data.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="insight-card positive scroll-reveal">
+                    <div class="insight-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                    <div>
+                        <span class="insight-type">POSITIVE</span>
+                        <p>Employee productivity increased by 12% compared with the previous period.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="insight-card warning scroll-reveal">
+                    <div class="insight-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                    <div>
+                        <span class="insight-type">WARNING</span>
+                        <p>4 employees currently have task completion rates below the expected threshold.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="insight-card highlight scroll-reveal">
+                    <div class="insight-icon"><i class="bi bi-trophy-fill"></i></div>
+                    <div>
+                        <span class="insight-type">TOP PERFORMER</span>
+                        <p>Arjun Kumar currently leads the organization with a 94.8% performance score.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="insight-card danger scroll-reveal">
+                    <div class="insight-icon"><i class="bi bi-alarm-fill"></i></div>
+                    <div>
+                        <span class="insight-type">DEADLINE RISK</span>
+                        <p>12 tasks are approaching their deadlines within the next 48 hours.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- LEADERBOARD PREVIEW -->
+<section class="leaderboard-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Recognition</span>
+            <h2 class="section-title">Recognize Exceptional Performance.</h2>
+            <p class="section-subtitle">Dynamic leaderboard showcasing top-performing employees.</p>
+        </div>
+        <div class="leaderboard-preview">
+            <div class="leader-card gold scroll-reveal">
+                <span class="leader-medal">🥇</span>
+                <div class="leader-avatar" style="background:#6366F1">AK</div>
+                <h5>Arjun Kumar</h5>
+                <span class="leader-dept">IT • Senior Developer</span>
+                <span class="leader-score">94.8%</span>
+                <div class="leader-badges">
+                    <span class="leader-badge">Top Performer</span>
+                </div>
+            </div>
+            <div class="leader-card silver scroll-reveal">
+                <span class="leader-medal">🥈</span>
+                <div class="leader-avatar" style="background:#8B5CF6">PS</div>
+                <h5>Priya Sharma</h5>
+                <span class="leader-dept">HR • HR Manager</span>
+                <span class="leader-score">93.2%</span>
+                <div class="leader-badges">
+                    <span class="leader-badge">Productivity Star</span>
+                </div>
+            </div>
+            <div class="leader-card bronze scroll-reveal">
+                <span class="leader-medal">🥉</span>
+                <div class="leader-avatar" style="background:#10B981">SR</div>
+                <h5>Sneha Rao</h5>
+                <span class="leader-dept">Marketing • Marketing Lead</span>
+                <span class="leader-score">91.7%</span>
+                <div class="leader-badges">
+                    <span class="leader-badge">Deadline Master</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ROLES SECTION -->
+<section class="roles-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge">Access Levels</span>
+            <h2 class="section-title">Role-Based Experience</h2>
+            <p class="section-subtitle">Tailored access for every role in your organization.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="role-card scroll-reveal">
+                    <div class="role-icon admin-icon"><i class="bi bi-shield-lock-fill"></i></div>
+                    <h4>Administrator</h4>
+                    <ul>
+                        <li><i class="bi bi-check2"></i> Manage employees & departments</li>
+                        <li><i class="bi bi-check2"></i> Assign and manage tasks</li>
+                        <li><i class="bi bi-check2"></i> View analytics & insights</li>
+                        <li><i class="bi bi-check2"></i> Generate reports</li>
+                        <li><i class="bi bi-check2"></i> Full system access</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="role-card scroll-reveal">
+                    <div class="role-icon emp-icon"><i class="bi bi-person-badge-fill"></i></div>
+                    <h4>Employee</h4>
+                    <ul>
+                        <li><i class="bi bi-check2"></i> View assigned tasks</li>
+                        <li><i class="bi bi-check2"></i> Update task progress</li>
+                        <li><i class="bi bi-check2"></i> View personal attendance</li>
+                        <li><i class="bi bi-check2"></i> View performance scores</li>
+                        <li><i class="bi bi-check2"></i> Personal dashboard</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Your Workforce Has the Data.<br><span>Now Turn It Into Performance.</span></h2>
+            <p>Centralize your employees, tasks, attendance and performance in one intelligent workspace.</p>
+            <div class="cta-buttons">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-cta-primary">
+                    <i class="bi bi-rocket-takeoff-fill"></i> Explore EmployeeHub
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="btn btn-cta-secondary">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="landing-footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="footer-brand">
+                    <h4><i class="bi bi-grid-3x3-gap-fill"></i> EmployeeHub</h4>
+                    <p>Smart Workforce Management Platform</p>
+                    <p class="footer-tagline">Empower Your Workforce. Measure Performance. Achieve More.</p>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h6>Product</h6>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#analytics">Analytics</a></li>
+                    <li><a href="#performance">Performance</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h6>Technology</h6>
+                <ul>
+                    <li><a href="#">Python</a></li>
+                    <li><a href="#">Flask</a></li>
+                    <li><a href="#">SQLite</a></li>
+                    <li><a href="#">SQLAlchemy</a></li>
+                    <li><a href="#">Chart.js</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <h6>Academic Project</h6>
+                <p class="footer-academic">Employment Task Management and Performance Tracking System using Python. Built with Flask, SQLAlchemy, and modern web technologies.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 EmployeeHub. Academic Project — Built with Python & Flask.</p>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+{% endblock %}

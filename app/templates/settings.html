@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Settings — EmployeeHub{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+{% block body_class %}app-layout{% endblock %}
+
+{% block body %}
+{% include "partials/sidebar.html" %}
+<main class="main-content" id="mainContent">
+    {% include "partials/topbar.html" %}
+    <div class="content-area">
+        <div class="content-header"><div><h1>Settings</h1><p>Application configuration</p></div></div>
+
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="data-card p-4">
+                    <h5 class="mb-3"><i class="bi bi-person-circle"></i> Account Information</h5>
+                    <div class="settings-item"><span class="settings-label">Email</span><span class="settings-value">{{ current_user.email }}</span></div>
+                    <div class="settings-item"><span class="settings-label">Role</span><span class="settings-value"><span class="score-badge badge-primary">{{ current_user.role }}</span></span></div>
+                    <div class="settings-item"><span class="settings-label">Last Login</span><span class="settings-value">{{ current_user.last_login.strftime('%b %d, %Y %H:%M') if current_user.last_login else 'N/A' }}</span></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="data-card p-4">
+                    <h5 class="mb-3"><i class="bi bi-palette"></i> Appearance</h5>
+                    <div class="settings-item">
+                        <span class="settings-label">Dark Mode</span>
+                        <label class="toggle-switch"><input type="checkbox" id="darkModeToggle" onchange="toggleTheme()"><span class="toggle-slider"></span></label>
+                    </div>
+                    <div class="settings-item"><span class="settings-label">Theme</span><span class="settings-value">EmployeeHub Default</span></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="data-card p-4">
+                    <h5 class="mb-3"><i class="bi bi-info-circle"></i> About EmployeeHub</h5>
+                    <div class="settings-item"><span class="settings-label">Version</span><span class="settings-value">1.0.0</span></div>
+                    <div class="settings-item"><span class="settings-label">Technology</span><span class="settings-value">Python • Flask • SQLAlchemy</span></div>
+                    <div class="settings-item"><span class="settings-label">Database</span><span class="settings-value">SQLite</span></div>
+                    <div class="settings-item"><span class="settings-label">Project</span><span class="settings-value">Academic Project</span></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="data-card p-4">
+                    <h5 class="mb-3"><i class="bi bi-database"></i> Data Management</h5>
+                    <p class="text-muted mb-3">Demo credentials: admin@employeehub.com / admin123</p>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary-custom"><i class="bi bi-box-arrow-right"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('darkModeToggle');
+    if(toggle) toggle.checked = document.documentElement.getAttribute('data-theme') === 'dark';
+});
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

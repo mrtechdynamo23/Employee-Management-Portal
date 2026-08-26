@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Performance — EmployeeHub{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+{% block body_class %}app-layout{% endblock %}
+
+{% block body %}
+{% include "partials/sidebar.html" %}
+<main class="main-content" id="mainContent">
+    {% include "partials/topbar.html" %}
+    <div class="content-area">
+        <div class="content-header">
+            <div><h1>Performance Tracking</h1><p>Period: {{ latest_period or 'N/A' }}</p></div>
+            <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addPerfModal"><i class="bi bi-plus-lg"></i> Add Record</button>
+        </div>
+
+        <div class="filter-bar">
+            <form method="GET" class="d-flex gap-2 flex-wrap align-items-center w-100">
+                <div class="search-box flex-grow-1"><i class="bi bi-search"></i><input type="text" name="search" value="{{ search }}" placeholder="Search employees..." class="form-control"></div>
+                <select name="department" class="form-select filter-select"><option value="">All Departments</option>{% for dept in departments %}<option value="{{ dept.id }}" {{ 'selected' if dept_filter|string == dept.id|string }}>{{ dept.name }}</option>{% endfor %}</select>
+                <select name="classification" class="form-select filter-select"><option value="">All Classifications</option>{% for c in ['Excellent','Very Good','Good','Average','Needs Improvement'] %}<option value="{{ c }}" {{ 'selected' if class_filter == c }}>{{ c }}</option>{% endfor %}</select>
+                <button type="submit" class="btn btn-primary-custom btn-sm"><i class="bi bi-filter"></i> Filter</button>
+            </form>
+        </div>
+
+        <div class="data-card">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead><tr><th>Employee</th><th>Task Comp.</th><th>Quality</th><th>Attendance</th><th>Productivity</th><th>Manager</th><th>Final Score</th><th>Classification</th></tr></thead>
+                    <tbody>
+                        {% for perf in performances %}
+                        <tr>
+                            <td>
+                                <div class="emp-cell">
+                                    <div class="emp-avatar" style="background:{{ perf.employee.avatar_color }}">{{ perf.employee.initials }}</div>
+                                    <div><span class="emp-name">{{ perf.employee.full_name }}</span><span class="emp-code">{{ perf.employee.department.name if perf.employee.department else '' }}</span></div>
+                                </div>
+                            </td>
+                            <td>{{ perf.task_completion }}%</td>
+                            <td>{{ perf.quality_score }}%</td>
+                            <td>{{ perf.attendance_score }}%</td>
+                            <td>{{ perf.productivity_score }}%</td>
+                            <td>{{ perf.manager_rating }}%</td>
+                            <td><strong>{{ perf.final_score }}%</strong></td>
+                            <td><span class="score-badge badge-{{ perf.classification_badge }}">{{ perf.classification }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ADD PERFORMANCE MODAL -->
+<div class="modal fade" id="addPerfModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-custom">
+            <div class="modal-header"><h5>Add Performance Record</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="{{ url_for('performance.add') }}" id="perfForm">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-6"><label class="form-label">Employee</label>
+                            <select name="employee_id" class="form-select" required>
+                                <option value="">Select Employee</option>
+                            </select>
+                        </div>
+                        <div class="col-6"><label class="form-label">Period (YYYY-MM)</label><input type="month" name="period" class="form-control" required></div>
+                        <div class="col-4"><label class="form-label">Task Completion (30%)</label><input type="number" name="task_completion" class="form-control perf-input" min="0" max="100" step="0.1" required></div>
+                        <div class="col-4"><label class="form-label">Quality Score (25%)</label><input type="number" name="quality_score" class="form-control perf-input" min="0" max="100" step="0.1" required></div>
+                        <div class="col-4"><label class="form-label">Attendance (15%)</label><input type="number" name="attendance_score" class="form-control perf-input" min="0" max="100" step="0.1" required></div>
+                        <div class="col-4"><label class="form-label">Productivity (20%)</label><input type="number" name="productivity_score" class="form-control perf-input" min="0" max="100" step="0.1" required></div>
+                        <div class="col-4"><label class="form-label">Manager Rating (10%)</label><input type="number" name="manager_rating" class="form-control perf-input" min="0" max="100" step="0.1" required></div>
+                        <div class="col-4">
+                            <label class="form-label">Calculated Score</label>
+                            <div class="calculated-score" id="calcScore">—</div>
+                        </div>
+                        <div class="col-12"><label class="form-label">Notes</label><textarea name="notes" class="form-control" rows="2"></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Cancel</button><button type="submit" class="btn btn-primary-custom"><i class="bi bi-check-lg"></i> Save Record</button></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Live performance calculation
+document.querySelectorAll('.perf-input').forEach(input => {
+    input.addEventListener('input', () => {
+        const tc = parseFloat(document.querySelector('[name=task_completion]').value) || 0;
+        const qs = parseFloat(document.querySelector('[name=quality_score]').value) || 0;
+        const as2 = parseFloat(document.querySelector('[name=attendance_score]').value) || 0;
+        const ps = parseFloat(document.querySelector('[name=productivity_score]').value) || 0;
+        const mr = parseFloat(document.querySelector('[name=manager_rating]').value) || 0;
+        const score = (tc*0.30 + qs*0.25 + as2*0.15 + ps*0.20 + mr*0.10).toFixed(1);
+        let cls = 'Needs Improvement';
+        if(score >= 90) cls = 'Excellent';
+        else if(score >= 80) cls = 'Very Good';
+        else if(score >= 70) cls = 'Good';
+        else if(score >= 60) cls = 'Average';
+        document.getElementById('calcScore').textContent = score + '% (' + cls + ')';
+    });
+});
+
+// Load employees for the select
+fetch('/employees/search?q=a').then(r=>r.json()).then(data => {
+    const sel = document.querySelector('[name=employee_id]');
+    data.forEach(e => {
+        const opt = document.createElement('option');
+        opt.value = e.id; opt.textContent = e.name + ' (' + e.code + ')';
+        sel.appendChild(opt);
+    });
+});
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

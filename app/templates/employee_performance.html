@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}My Performance — EmployeeHub{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">{% endblock %}
+{% block body_class %}app-layout{% endblock %}
+
+{% block body %}
+{% include "partials/sidebar.html" %}
+<main class="main-content" id="mainContent">
+    {% include "partials/topbar.html" %}
+    <div class="content-area">
+        <div class="content-header">
+            <div>
+                <h1><i class="bi bi-award-fill" style="color:#F59E0B"></i> My Performance Scorecard</h1>
+                <p>Transparent evaluation breakdown and historical review scores</p>
+            </div>
+            {% if latest_perf %}
+            <span class="score-badge badge-{{ latest_perf.classification_badge }} fs-6 px-3 py-2">
+                Latest Score: {{ latest_perf.final_score }}% ({{ latest_perf.classification }})
+            </span>
+            {% endif %}
+        </div>
+
+        {% if latest_perf %}
+        <!-- LATEST SCORECARD HERO -->
+        <div class="profile-card mb-4 p-4">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-4 text-center border-end">
+                    <span class="text-muted small d-block mb-1">Current Evaluation Period</span>
+                    <h4 class="fw-bold mb-2">{{ latest_perf.period }}</h4>
+                    <div class="display-3 fw-bold text-primary mb-2">{{ latest_perf.final_score }}%</div>
+                    <span class="badge bg-success px-3 py-1 fs-6">{{ latest_perf.classification }}</span>
+                </div>
+                <div class="col-lg-8">
+                    <h5 class="mb-3 fs-6 fw-bold"><i class="bi bi-sliders"></i> Weighted Scoring Formula Breakdown</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-2 rounded bg-light border mb-2">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>Task Completion (30%)</span>
+                                    <strong class="text-primary">{{ latest_perf.task_completion }}%</strong>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" style="width: {{ latest_perf.task_completion }}%"></div>
+                                </div>
+                            </div>
+                            <div class="p-2 rounded bg-light border mb-2">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>Task Quality (25%)</span>
+                                    <strong class="text-purple" style="color:#8B5CF6;">{{ latest_perf.quality_score }}%</strong>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar" style="width: {{ latest_perf.quality_score }}%; background:#8B5CF6;"></div>
+                                </div>
+                            </div>
+                            <div class="p-2 rounded bg-light border">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>Attendance Consistency (15%)</span>
+                                    <strong class="text-success">{{ latest_perf.attendance_score }}%</strong>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: {{ latest_perf.attendance_score }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-2 rounded bg-light border mb-2">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>Productivity Index (20%)</span>
+                                    <strong class="text-warning">{{ latest_perf.productivity_score }}%</strong>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-warning" style="width: {{ latest_perf.productivity_score }}%"></div>
+                                </div>
+                            </div>
+                            <div class="p-2 rounded bg-light border mb-2">
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span>Manager Rating (10%)</span>
+                                    <strong class="text-info">{{ latest_perf.manager_rating }}%</strong>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-info" style="width: {{ latest_perf.manager_rating }}%"></div>
+                                </div>
+                            </div>
+                            {% if latest_perf.notes %}
+                            <div class="p-2 rounded bg-light border small text-muted">
+                                <strong>Supervisor Feedback:</strong> {{ latest_perf.notes }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- HISTORICAL REVIEWS -->
+        <div class="data-card">
+            <div class="card-header bg-white p-3 border-bottom">
+                <h5 class="mb-0 fs-6"><i class="bi bi-clock-history"></i> Performance History</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Period</th>
+                            <th>Task Comp. (30%)</th>
+                            <th>Quality (25%)</th>
+                            <th>Attendance (15%)</th>
+                            <th>Productivity (20%)</th>
+                            <th>Manager (10%)</th>
+                            <th>Final Score</th>
+                            <th>Classification</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for perf in performances %}
+                        <tr>
+                            <td><strong>{{ perf.period }}</strong></td>
+                            <td>{{ perf.task_completion }}%</td>
+                            <td>{{ perf.quality_score }}%</td>
+                            <td>{{ perf.attendance_score }}%</td>
+                            <td>{{ perf.productivity_score }}%</td>
+                            <td>{{ perf.manager_rating }}%</td>
+                            <td><strong class="text-primary fs-6">{{ perf.final_score }}%</strong></td>
+                            <td><span class="score-badge badge-{{ perf.classification_badge }}">{{ perf.classification }}</span></td>
+                        </tr>
+                        {% endfor %}
+                        {% if not performances %}
+                        <tr><td colspan="8" class="text-center py-4 text-muted">No historical performance records.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
