@@ -62,4 +62,18 @@ def create_app(config_class=Config):
         from flask_login import current_user
         return dict(current_user=current_user)
 
+    # Initialize database and seed demo data on first start (non-testing)
+    if not app.config.get('TESTING'):
+        with app.app_context():
+            import os
+            os.makedirs(os.path.join(app.root_path, '..', 'instance'), exist_ok=True)
+            db.create_all()
+            from app.models.user import User
+            if User.query.count() == 0:
+                try:
+                    from app.utils.seed_data import seed_all
+                    seed_all()
+                except Exception as ex:
+                    print(f"[EmployeeHub] Notice: Initial seed skipped or already present: {ex}")
+
     return app
