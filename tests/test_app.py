@@ -290,6 +290,28 @@ class TestPerformanceCalculation(BaseTestCase):
         self.assertLessEqual(score, 100)
 
 
+class TestPerformanceRoutes(BaseTestCase):
+    """Test performance tracking web routes."""
+
+    def test_admin_performance_page(self):
+        """Test admin performance page loads."""
+        self.login_admin()
+        response = self.client.get('/performance/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_employee_performance_page(self):
+        """Test employee scorecard page loads."""
+        self.login_employee()
+        response = self.client.get('/performance/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_leaderboard_page(self):
+        """Test leaderboard page loads."""
+        self.login_admin()
+        response = self.client.get('/performance/leaderboard')
+        self.assertEqual(response.status_code, 200)
+
+
 class TestAttendance(BaseTestCase):
     """Test attendance tracking."""
 
